@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">StoreApp170411</string>
+
+    <!-- Text for the sell button in the list item -->
+    <string name="sell_button">Sell</string>
+
 </resources>
