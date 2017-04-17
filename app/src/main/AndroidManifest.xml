@@ -12,7 +12,6 @@
         <activity android:name=".StoreFrontActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -26,6 +25,10 @@
                 android:value=".StoreFrontActivity" />
         </activity>
 
+        <provider
+            android:name=".Data.StoreProvider"
+            android:authorities="com.gorgant.storeapp170411"
+            android:exported="false" />
 
     </application>
 

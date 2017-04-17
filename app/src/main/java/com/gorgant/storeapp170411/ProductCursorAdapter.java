@@ -73,7 +73,7 @@ public class ProductCursorAdapter extends CursorAdapter {
         double productPrice = cursor.getDouble(priceColumnIndex);
 
         nameTextView.setText(productName);
-        quantityTextView.setText(productQuantity);
+        quantityTextView.setText(String.valueOf(productQuantity));
         priceTextView.setText(String.valueOf(productPrice));
     }
 }

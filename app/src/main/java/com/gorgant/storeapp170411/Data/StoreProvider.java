@@ -174,7 +174,10 @@ public class StoreProvider extends ContentProvider {
      */
     private Uri insertProduct(Uri uri, ContentValues values) {
         // Check that the name is not null
-        String name = values.getAsString(ProductEntry.COLUMN_PRODUCT_IMAGE);
+        String name = values.getAsString(ProductEntry.COLUMN_PRODUCT_NAME);
+
+        Log.i(LOG_TAG,"Product name is: " + name);
+
         if (TextUtils.isEmpty(name)) {
             throw new IllegalArgumentException("Product requires a name");
         }
@@ -194,7 +197,7 @@ public class StoreProvider extends ContentProvider {
         // Get writeable database
         SQLiteDatabase database = mDbHelper.getWritableDatabase();
 
-        // Insert the new pet with the given values
+        // Insert the new product with the given values
         long id = database.insert(ProductEntry.TABLE_NAME, null, values);
         // If the ID is -1, then the insertion failed. Log an error and return null.
         if (id == -1) {
@@ -204,6 +207,8 @@ public class StoreProvider extends ContentProvider {
 
         // Notify all listeners that the data has changed for the pet content URI
         getContext().getContentResolver().notifyChange(uri, null);
+
+        Log.i(LOG_TAG,"insertProduct URI: " + ContentUris.withAppendedId(uri,id).toString());
 
         // Return the new URI with the ID (of the newly inserted row) appended at the end
         return ContentUris.withAppendedId(uri, id);

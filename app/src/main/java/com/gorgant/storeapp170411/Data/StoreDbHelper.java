@@ -49,7 +49,7 @@ public class StoreDbHelper extends SQLiteOpenHelper {
                 + ProductEntry.COLUMN_PRODUCT_QUANTITY + " TEXT, "
                 + ProductEntry.COLUMN_PRODUCT_PRICE + " INTEGER NOT NULL, "
                 + ProductEntry.COLUMN_PRODUCT_INSTOCK + " INTEGER NOT NULL DEFAULT 0, "
-                + ProductEntry.COLUMN_PRODUCT_IMAGE + " BLOB NOT NULL);";
+                + ProductEntry.COLUMN_PRODUCT_IMAGE + " BLOB);";
 
         // Execute the SQL statement
         db.execSQL(SQL_CREATE_STORE_TABLE);
