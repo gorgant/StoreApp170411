@@ -64,6 +64,9 @@ public class StoreFrontActivity extends AppCompatActivity implements
         productListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+
+                Log.i(LOG_TAG,"List item clicked!");
+
                 // Create new intent to go to {@link WarehouseActivity}
                 Intent intent = new Intent(StoreFrontActivity.this, WarehouseActivity.class);
 
@@ -97,7 +100,7 @@ public class StoreFrontActivity extends AppCompatActivity implements
         values.put(ProductEntry.COLUMN_PRODUCT_QUANTITY, 5);
         values.put(ProductEntry.COLUMN_PRODUCT_PRICE, 33.33);
         values.put(ProductEntry.COLUMN_PRODUCT_INSTOCK, 1);
-        values.put(ProductEntry.COLUMN_PRODUCT_IMAGE, "fakebytemap");
+        values.put(ProductEntry.COLUMN_PRODUCT_IMAGE, new byte[] {});
 
         // Insert a new row for Slinky into the provider using the ContentResolver.
         // Use the {@link ProductEntry#CONTENT_URI} to indicate that we want to insert

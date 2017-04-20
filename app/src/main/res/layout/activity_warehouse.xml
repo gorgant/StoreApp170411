@@ -1,6 +1,85 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    tools:context=".WarehouseActivity">
+
+    <!-- Overview category -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <!-- Labels -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_weight="1">
+            <!-- Category Label -->
+            <TextView
+                android:text="@string/category_name"
+                style="@style/CategoryStyle" />
+
+            <!-- Quantity Label -->
+            <TextView
+                android:text="@string/category_quantity"
+                style="@style/CategoryStyle" />
+
+            <!-- Quantity Label -->
+            <TextView
+                android:text="@string/category_price"
+                style="@style/CategoryStyle" />
+
+        </LinearLayout>
+
+        <!-- Input fields -->
+        <LinearLayout
+            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight="2"
+            android:paddingLeft="4dp"
+            android:orientation="vertical">
+
+            <!-- Name field -->
+            <EditText
+                android:id="@+id/edit_product_name"
+                android:hint="@string/hint_product_name"
+                android:inputType="textCapWords"
+                style="@style/WarehouseFieldStyle" />
+
+            <!-- Quantity field -->
+            <EditText
+                android:id="@+id/edit_product_quantity"
+                android:hint="@string/hint_product_quantity"
+                android:inputType="number"
+                style="@style/WarehouseFieldStyle" />
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <!-- Price field -->
+                <EditText
+                    android:id="@+id/edit_product_price"
+                    android:hint="@string/hint_product_price"
+                    android:inputType="number"
+                    style="@style/WarehouseFieldStyle" />
+
+                <!-- Units for price (kg) -->
+                <TextView
+                    android:id="@+id/label_price_units"
+                    android:text="@string/unit_product_price"
+                    style="@style/WarehouseUnitsStyle"/>
+
+            </RelativeLayout>
+
+
+        </LinearLayout>
+    </LinearLayout>
+
 
 </LinearLayout>
