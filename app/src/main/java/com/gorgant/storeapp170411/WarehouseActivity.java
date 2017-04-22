@@ -12,6 +12,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
@@ -25,6 +26,10 @@ import android.widget.ImageView;
 import android.widget.Toast;
 import com.gorgant.storeapp170411.Data.StoreContract.ProductEntry;
 
+import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+
 /**
  * Created by Ludeyu on 4/11/2017.
  */
@@ -32,12 +37,16 @@ import com.gorgant.storeapp170411.Data.StoreContract.ProductEntry;
 public class WarehouseActivity extends AppCompatActivity implements
         LoaderManager.LoaderCallbacks<Cursor> {
 
-    //TODO: Integrate image upload into this class, particularly in the insert new product and load existing product
+    //TODO: Refine the image upload process (show image once uploaded without having to click save;
+    //TODO: if press back, no crash; check for other bugs
 
     public static final String LOG_TAG = WarehouseActivity.class.getSimpleName();
 
     /** Identifier for the product data loader */
     private static final int EXISTING_PRODUCT_LOADER = 0;
+
+    /** Identifier for the photo selection */
+    private static final int SELECT_PHOTO = 99;
 
     /** Content URI for the existing product (null if it's a new product) */
     private Uri mCurrentProductUri;
@@ -54,6 +63,8 @@ public class WarehouseActivity extends AppCompatActivity implements
     private ImageView mProductImage;
 
     private Button mEditImageButton;
+
+    private Bitmap productImageBitmap;
 
     /** Boolean flag that keeps track of whether the product has been edited (true) or not (false) */
     private boolean mProductHasChanged = false;
@@ -114,6 +125,56 @@ public class WarehouseActivity extends AppCompatActivity implements
         mQuantityEditText.setOnTouchListener(mTouchListener);
         mPriceEditText.setOnTouchListener(mTouchListener);
         mEditImageButton.setOnTouchListener(mTouchListener);
+
+        mEditImageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
+                photoPickerIntent.setType("image/*");
+                startActivityForResult(photoPickerIntent,SELECT_PHOTO);
+            }
+        });
+    }
+
+    /**
+     * Dispatch incoming result to the correct fragment.  Code found here:
+     * http://stackoverflow.com/questions/2507898/how-to-pick-an-image-from-gallery-sd-card-for-my-app
+     *
+     * @param requestCode
+     * @param resultCode
+     * @param imageReturnedIntent
+     */
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent imageReturnedIntent) {
+        super.onActivityResult(requestCode, resultCode, imageReturnedIntent);
+
+        //Original solution that might work but is more clunky
+//        switch (requestCode) {
+//            case SELECT_PHOTO:
+//                if(requestCode == RESULT_OK) {
+//                    Uri selectedImage = imageReturnedIntent.getData();
+//                    String[] filePathColumn = {MediaStore.Images.Media.DATA};
+//
+//                    Cursor cursor = getContentResolver().query(
+//                            selectedImage, filePathColumn, null, null, null);
+//                    cursor.moveToFirst();
+//
+//                    int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+//                    String filePath = cursor.getString(columnIndex);
+//                    cursor.close();
+//
+//                    Bitmap yourSelectedImage = BitmapFactory.decodeFile(filePath);
+//                }
+//        }
+
+        try {
+            InputStream imageInputStream = getApplicationContext().getContentResolver().
+                    openInputStream(imageReturnedIntent.getData());
+            productImageBitmap = BitmapFactory.decodeStream(imageInputStream);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
     }
 
     /**
@@ -125,6 +186,8 @@ public class WarehouseActivity extends AppCompatActivity implements
         String nameString = mNameEditText.getText().toString().trim();
         String quantityString = mQuantityEditText.getText().toString().trim();
         String priceString = mPriceEditText.getText().toString().trim();
+        byte[] imageByteArray = convertBitmapToByteArray(productImageBitmap);
+
 
         // Check if this is supposed to be a new product
         // and check if all the fields in the editor are blank
@@ -142,6 +205,7 @@ public class WarehouseActivity extends AppCompatActivity implements
         values.put(ProductEntry.COLUMN_PRODUCT_NAME, nameString);
         values.put(ProductEntry.COLUMN_PRODUCT_QUANTITY, quantityString);
         values.put(ProductEntry.COLUMN_PRODUCT_PRICE, priceString);
+        values.put(ProductEntry.COLUMN_PRODUCT_IMAGE, imageByteArray);
 
         // Determine if this is a new or existing product by checking if mCurrentPetUri is null or not
         if (mCurrentProductUri == null) {
@@ -445,6 +509,12 @@ public class WarehouseActivity extends AppCompatActivity implements
     private Bitmap convertByteArrayToImage(byte[] byteArray) {
         Bitmap imageBitmap = BitmapFactory.decodeByteArray(byteArray,0,byteArray.length);
         return imageBitmap;
+    }
+
+    private byte[] convertBitmapToByteArray(Bitmap bitmap) {
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 70, stream);
+        return stream.toByteArray();
     }
 
     /**

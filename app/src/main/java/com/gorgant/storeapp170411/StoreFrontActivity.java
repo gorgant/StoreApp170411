@@ -9,10 +9,8 @@ import android.content.Loader;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -104,7 +102,7 @@ public class StoreFrontActivity extends AppCompatActivity implements
         //Create a dummy image
         Bitmap dummyImageBm = BitmapFactory.decodeResource(getResources(),R.drawable.hammer_image);
 
-        byte[] imageByteArray = getBytesFromBitmap(dummyImageBm);
+        byte[] imageByteArray = convertBitmapToByteArray(dummyImageBm);
 
         // Create a ContentValues object where column names are the keys,
         // and Slinky's product attributes are the values.
@@ -123,7 +121,7 @@ public class StoreFrontActivity extends AppCompatActivity implements
         Log.i(LOG_TAG,newUri.toString());
     }
 
-    private byte[] getBytesFromBitmap(Bitmap bitmap) {
+    private byte[] convertBitmapToByteArray(Bitmap bitmap) {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.PNG, 70, stream);
         return stream.toByteArray();
