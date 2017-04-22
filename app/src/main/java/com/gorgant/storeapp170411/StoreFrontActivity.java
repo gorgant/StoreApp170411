@@ -21,8 +21,11 @@ import android.widget.Toast;
 
 import com.gorgant.storeapp170411.Data.StoreContract.ProductEntry;
 
+
 public class StoreFrontActivity extends AppCompatActivity implements
         LoaderManager.LoaderCallbacks<Cursor> {
+
+    //TODO: Add "sell" functionality to SELL button so that qty goes down
 
     /** Identifier for the product data loader */
     private static final int PRODUCT_LOADER = 0;
@@ -85,9 +88,12 @@ public class StoreFrontActivity extends AppCompatActivity implements
             }
         });
 
+
+
         // Kick off the loader
         getLoaderManager().initLoader(PRODUCT_LOADER, null, this);
     }
+
 
     /**
      * Helper method to insert hardcoded product data into the database. For debugging purposes only.
@@ -211,4 +217,5 @@ public class StoreFrontActivity extends AppCompatActivity implements
         mCursorAdapter.swapCursor(null);
 
     }
+
 }
