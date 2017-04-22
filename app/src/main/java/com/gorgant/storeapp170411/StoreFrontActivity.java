@@ -7,8 +7,12 @@ import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -21,11 +25,11 @@ import android.widget.Toast;
 
 import com.gorgant.storeapp170411.Data.StoreContract.ProductEntry;
 
+import java.io.ByteArrayOutputStream;
+
 
 public class StoreFrontActivity extends AppCompatActivity implements
         LoaderManager.LoaderCallbacks<Cursor> {
-
-    //TODO: Add "sell" functionality to SELL button so that qty goes down
 
     /** Identifier for the product data loader */
     private static final int PRODUCT_LOADER = 0;
@@ -49,7 +53,6 @@ public class StoreFrontActivity extends AppCompatActivity implements
                 startActivity(intent);
             }
         });
-
 
         // Find the ListView which will be populated with the product data
         ListView productListView = (ListView) findViewById(R.id.list);
@@ -88,8 +91,6 @@ public class StoreFrontActivity extends AppCompatActivity implements
             }
         });
 
-
-
         // Kick off the loader
         getLoaderManager().initLoader(PRODUCT_LOADER, null, this);
     }
@@ -99,6 +100,12 @@ public class StoreFrontActivity extends AppCompatActivity implements
      * Helper method to insert hardcoded product data into the database. For debugging purposes only.
      */
     private void insertDummyProduct() {
+
+        //Create a dummy image
+        Bitmap dummyImageBm = BitmapFactory.decodeResource(getResources(),R.drawable.hammer_image);
+
+        byte[] imageByteArray = getBytesFromBitmap(dummyImageBm);
+
         // Create a ContentValues object where column names are the keys,
         // and Slinky's product attributes are the values.
         ContentValues values = new ContentValues();
@@ -106,7 +113,7 @@ public class StoreFrontActivity extends AppCompatActivity implements
         values.put(ProductEntry.COLUMN_PRODUCT_QUANTITY, 5);
         values.put(ProductEntry.COLUMN_PRODUCT_PRICE, 33.33);
         values.put(ProductEntry.COLUMN_PRODUCT_INSTOCK, 1);
-        values.put(ProductEntry.COLUMN_PRODUCT_IMAGE, new byte[] {});
+        values.put(ProductEntry.COLUMN_PRODUCT_IMAGE, imageByteArray);
 
         // Insert a new row for Slinky into the provider using the ContentResolver.
         // Use the {@link ProductEntry#CONTENT_URI} to indicate that we want to insert
@@ -114,6 +121,12 @@ public class StoreFrontActivity extends AppCompatActivity implements
         // Receive the new content URI that will allow us to access Slinky's data in the future.
         Uri newUri = getContentResolver().insert(ProductEntry.CONTENT_URI, values);
         Log.i(LOG_TAG,newUri.toString());
+    }
+
+    private byte[] getBytesFromBitmap(Bitmap bitmap) {
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 70, stream);
+        return stream.toByteArray();
     }
 
     private void deleteAllProducts() {

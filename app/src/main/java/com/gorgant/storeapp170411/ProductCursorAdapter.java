@@ -11,7 +11,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CursorAdapter;
-import android.widget.ListAdapter;
 import android.widget.TextView;
 
 import com.gorgant.storeapp170411.Data.StoreContract.ProductEntry;
@@ -110,7 +109,5 @@ public class ProductCursorAdapter extends CursorAdapter {
                 }
             }
         });
-
-
     }
 }

@@ -8,6 +8,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
@@ -17,7 +19,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 import com.gorgant.storeapp170411.Data.StoreContract.ProductEntry;
 
@@ -46,6 +50,10 @@ public class WarehouseActivity extends AppCompatActivity implements
 
     /** EditText field to enter the product's price */
     private EditText mPriceEditText;
+
+    private ImageView mProductImage;
+
+    private Button mEditImageButton;
 
     /** Boolean flag that keeps track of whether the product has been edited (true) or not (false) */
     private boolean mProductHasChanged = false;
@@ -95,6 +103,9 @@ public class WarehouseActivity extends AppCompatActivity implements
         mNameEditText = (EditText) findViewById(R.id.edit_product_name);
         mQuantityEditText = (EditText) findViewById(R.id.edit_product_quantity);
         mPriceEditText = (EditText) findViewById(R.id.edit_product_price);
+        mProductImage = (ImageView) findViewById(R.id.product_image);
+        mEditImageButton = (Button) findViewById(R.id.edit_image_button);
+
 
         // Setup OnTouchListeners on all the input fields, so we can determine if the user
         // has touched or modified them. This will let us know if there are unsaved changes
@@ -102,6 +113,7 @@ public class WarehouseActivity extends AppCompatActivity implements
         mNameEditText.setOnTouchListener(mTouchListener);
         mQuantityEditText.setOnTouchListener(mTouchListener);
         mPriceEditText.setOnTouchListener(mTouchListener);
+        mEditImageButton.setOnTouchListener(mTouchListener);
     }
 
     /**
@@ -410,13 +422,29 @@ public class WarehouseActivity extends AppCompatActivity implements
             String name = data.getString(nameColumnIndex);
             int quantity = data.getInt(quantityColumnIndex);
             double price = data.getDouble(priceColumnIndex);
-            byte[] image = data.getBlob(imageColumnIndex);
+            byte[] imageByteArray = data.getBlob(imageColumnIndex);
+
+            //convert byte array to image
+            Bitmap currentProductImageBitmap = convertByteArrayToImage(imageByteArray);
 
             // Update the views on the screen with the values from the database
             mNameEditText.setText(name);
             mQuantityEditText.setText(Integer.toString(quantity));
             mPriceEditText.setText(Double.toString(price));
+            mProductImage.setImageBitmap(currentProductImageBitmap);
         }
+    }
+
+    /**
+     * Helper method from this website http://stackoverflow.com/questions/9357668/how-to-store-image-in-sqlite-database
+     * that converts the byte array to a bitmap for rendering
+     * @param byteArray
+     * @return
+     */
+
+    private Bitmap convertByteArrayToImage(byte[] byteArray) {
+        Bitmap imageBitmap = BitmapFactory.decodeByteArray(byteArray,0,byteArray.length);
+        return imageBitmap;
     }
 
     /**
