@@ -167,14 +167,19 @@ public class WarehouseActivity extends AppCompatActivity implements
 //                }
 //        }
 
-        try {
-            InputStream imageInputStream = getApplicationContext().getContentResolver().
-                    openInputStream(imageReturnedIntent.getData());
-            productImageBitmap = BitmapFactory.decodeStream(imageInputStream);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
+        switch (requestCode) {
+            case SELECT_PHOTO:
+                if(resultCode == RESULT_OK) {
 
+                    try {
+                        InputStream imageInputStream = getApplicationContext().getContentResolver().
+                                openInputStream(imageReturnedIntent.getData());
+                        productImageBitmap = BitmapFactory.decodeStream(imageInputStream);
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    }
+                }
+        }
     }
 
     /**
@@ -186,6 +191,7 @@ public class WarehouseActivity extends AppCompatActivity implements
         String nameString = mNameEditText.getText().toString().trim();
         String quantityString = mQuantityEditText.getText().toString().trim();
         String priceString = mPriceEditText.getText().toString().trim();
+
         byte[] imageByteArray = convertBitmapToByteArray(productImageBitmap);
 
 
@@ -489,13 +495,13 @@ public class WarehouseActivity extends AppCompatActivity implements
             byte[] imageByteArray = data.getBlob(imageColumnIndex);
 
             //convert byte array to image
-            Bitmap currentProductImageBitmap = convertByteArrayToImage(imageByteArray);
+            productImageBitmap = convertByteArrayToImage(imageByteArray);
 
             // Update the views on the screen with the values from the database
             mNameEditText.setText(name);
             mQuantityEditText.setText(Integer.toString(quantity));
             mPriceEditText.setText(Double.toString(price));
-            mProductImage.setImageBitmap(currentProductImageBitmap);
+            mProductImage.setImageBitmap(productImageBitmap);
         }
     }
 
