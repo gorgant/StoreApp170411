@@ -37,9 +37,6 @@ import java.io.InputStream;
 public class WarehouseActivity extends AppCompatActivity implements
         LoaderManager.LoaderCallbacks<Cursor> {
 
-    //TODO: Refine the image upload process (show image once uploaded without having to click save;
-    //TODO: if press back, no crash; check for other bugs
-
     public static final String LOG_TAG = WarehouseActivity.class.getSimpleName();
 
     /** Identifier for the product data loader */
@@ -60,10 +57,13 @@ public class WarehouseActivity extends AppCompatActivity implements
     /** EditText field to enter the product's price */
     private EditText mPriceEditText;
 
+    /** ImageView field for the product image */
     private ImageView mProductImage;
 
+    /** Button used to set the product image */
     private Button mEditImageButton;
 
+    /** Bitmap rendering of the product image */
     private Bitmap productImageBitmap;
 
     /** Boolean flag that keeps track of whether the product has been edited (true) or not (false) */
@@ -126,6 +126,8 @@ public class WarehouseActivity extends AppCompatActivity implements
         mPriceEditText.setOnTouchListener(mTouchListener);
         mEditImageButton.setOnTouchListener(mTouchListener);
 
+        //OnClickListener for the EditImageButton allowing user to set a new image
+        //Launches the photo picker intent
         mEditImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -137,7 +139,9 @@ public class WarehouseActivity extends AppCompatActivity implements
     }
 
     /**
-     * Dispatch incoming result to the correct fragment.  Code found here:
+     * Dispatch incoming result to the correct fragment.  In this case, launch the photo picker and
+     * deliver the correct photo to productImageBitmap.
+     * Code found here:
      * http://stackoverflow.com/questions/2507898/how-to-pick-an-image-from-gallery-sd-card-for-my-app
      *
      * @param requestCode
@@ -175,6 +179,7 @@ public class WarehouseActivity extends AppCompatActivity implements
                         InputStream imageInputStream = getApplicationContext().getContentResolver().
                                 openInputStream(imageReturnedIntent.getData());
                         productImageBitmap = BitmapFactory.decodeStream(imageInputStream);
+                        mProductImage.setImageBitmap(productImageBitmap);
                     } catch (FileNotFoundException e) {
                         e.printStackTrace();
                     }
@@ -508,7 +513,7 @@ public class WarehouseActivity extends AppCompatActivity implements
     /**
      * Helper method from this website http://stackoverflow.com/questions/9357668/how-to-store-image-in-sqlite-database
      * that converts the byte array to a bitmap for rendering
-     * @param byteArray
+     * @param byteArray the byteArray to be converted
      * @return
      */
 
@@ -517,6 +522,11 @@ public class WarehouseActivity extends AppCompatActivity implements
         return imageBitmap;
     }
 
+    /**
+     * Helper method from this that converts the bitmap to a byte array for storage in the database
+     * @param bitmap the bitmap to be converted
+     * @return
+     */
     private byte[] convertBitmapToByteArray(Bitmap bitmap) {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.PNG, 70, stream);
